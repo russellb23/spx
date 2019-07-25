@@ -35,7 +35,7 @@ impl Player {
         self.score
     }
 
-    pub fn add_score(&mut self, val: usize) {
+    pub fn set_score(&mut self, val: usize) {
         self.score += val
     }
 
@@ -56,6 +56,12 @@ impl Player {
         self.stateid
     }
 
+}
+
+impl fmt::Display for Player {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Player: {}\nScore: {}\nRank: {}\nStateId: {:?}", self.name, self.score, self.rank, self.stateid)
+    }
 }
 
 #[derive(Debug, Hash)]
@@ -83,7 +89,7 @@ impl Leaderboard {
     }
 
     pub fn update_score(&mut self, val: usize) {
-        self.score += val
+        self.score = val
     }
 
     pub fn get_round(&self) -> usize {
@@ -104,8 +110,8 @@ impl Leaderboard {
 
 #[derive(Debug, Hash)]
 pub struct Gameboard {
-    airobo: Option<State>,
-    player: Option<State>,
+//    airobo: Option<State>,
+//    player: Option<State>,
     victor: Option<String>,
     r_score: usize,
     p_score: usize,
@@ -113,10 +119,10 @@ pub struct Gameboard {
 }
 
 impl Gameboard {
-    pub fn update_states(&mut self, p: Option<State>, r: Option<State>) {
-        self.airobo = r;
-        self.player = p;
-    }
+//    pub fn update_states(&mut self, p: Option<State>, r: Option<State>) {
+//        self.airobo = r;
+//        self.player = p;
+//    }
 
     pub fn update_victor(&mut self, name: Option<String>) {
         self.victor = name;
@@ -125,7 +131,7 @@ impl Gameboard {
     pub fn update(&mut self, r_val: usize, p_val: usize, inc: usize) {
         self.r_score = r_val;
         self.p_score = p_val;
-        self.rounds += inc;
+        self.rounds = inc;
     }
 
     pub fn get_r_score(&self) -> usize {
@@ -140,10 +146,10 @@ impl Gameboard {
         self.rounds
     }
 
-    pub fn init(r: Option<State>, p: Option<State>) -> Self {
+    pub fn init() -> Self {
         Gameboard {
-            airobo: r,
-            player: p,
+//            airobo: r,
+//            player: p,
             victor: None,
             p_score: 0,
             r_score: 0,
@@ -158,8 +164,11 @@ impl Gameboard {
 
 impl fmt::Display for Gameboard {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Player: {}\nRobo: {}\nRound: {}", self.p_score, 
-               self.r_score, self.rounds)
+        let winner = self.victor.clone();
+        let win = winner.unwrap();
+        write!(f, "=======================================================
+Player: {}\nRobo: {}\nTotal rounds: {}\nWinner: {:?}
+=======================================================", self.p_score, self.r_score, self.rounds, win)//, self.airobo, self.player)
     }
 }
 
@@ -167,10 +176,11 @@ impl fmt::Display for Gameboard {
 #[derive(Debug, Hash)]
 pub struct GameState {
     state: Gameboard,
+    player: Player,
 }
 
 impl GameState {
-    pub fn new(gamestate: Gameboard) -> Self {
-        GameState { state: gamestate, }
+    pub fn new(gamestate: Gameboard, player: Player) -> Self {
+        GameState { state: gamestate, player: player, }
     }
 }
