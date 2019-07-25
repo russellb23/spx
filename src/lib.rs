@@ -5,15 +5,12 @@ pub mod base_impl;
 
 use std::io::stdin;
 use base::Player;
-//use base::GameState;
 use base::Gameboard;
 use base::State;
-//use base::RDaemon;
-//use base::PDaemon;
 
 //use std::collections::HashMap;
 //use std::result::Result;
-//
+
 use rand::Rng;
 
 pub fn game(pname: String, num_rounds: usize) {
@@ -31,24 +28,6 @@ pub fn game(pname: String, num_rounds: usize) {
         let r = r_daem.get_stateid();
         let p = p_daem.get_stateid();
 
-
-
-        // Update Gameboard
-        let r_state = match r {
-            1 => { State::Rock },
-            2 => { State::Paper },
-            3 => { State::Scissors },
-            _ => { State::Uninit }
-        };
-
-        let p_state = match p {
-            1 => { State::Rock },
-            2 => { State::Paper },
-            3 => { State::Scissors },
-            _ => { State::Uninit }
-        };
-
-//        g.update_states(Some(p_state), Some(r_state));
         g.update(robo.get_score(), player.get_score(), nround);
 
         if r == 4 || p == 4 { 
@@ -75,9 +54,7 @@ pub fn game(pname: String, num_rounds: usize) {
                 robo.set_score(0);
             }
         }
-//        println!("Player score: {}", player.get_score());
-//        println!("Robot score: {}", robo.get_score());
-        // Set victor for this round
+        // Set victor 
         if g.get_p_score() > g.get_r_score() {
             g.update_victor(Some(player.get_name().to_string()));
         } else if g.get_r_score() > g.get_p_score() {
@@ -99,9 +76,6 @@ pub fn get_daemons<'a>(r: &'a mut Player, p: &'a mut Player) ->
                                             (&'a mut Player, &'a mut Player) { 
     let robo = rand::thread_rng().gen_range(1,4);
     let play = player_daemon();
-
-//    let mut robo_state: State;
-//    let mut player_daemon: State;
 
     match robo {
         1 => { r.update_state(1) },
