@@ -1,3 +1,5 @@
+use serde::{Serialize, Deserialize};
+
 // Game structures
 pub type PDaemon = State;
 pub type RDaemon = State;
@@ -13,7 +15,7 @@ pub enum State {
     Uninit,
 }
 
-#[derive(Debug, Hash)]
+#[derive(Debug, Hash, Deserialize, Serialize, Clone)]
 pub struct Player {
     name: String,
     score: usize,
@@ -109,7 +111,7 @@ impl Leaderboard {
 }
 
 
-#[derive(Debug, Hash)]
+#[derive(Debug, Hash, Serialize, Eq, PartialEq, Deserialize, Clone)]
 pub struct Gameboard {
     victor: Option<String>,
     r_score: usize,
@@ -157,7 +159,7 @@ impl Gameboard {
 
 impl fmt::Display for Gameboard {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let winner = self.victor.clone();
+        let winner: Option<String> = self.victor.clone();
         let win = winner.unwrap();
         write!(f, "=======================================================
 Player: {}\nRobo: {}\nTotal rounds: {}\nWinner: {:?}
@@ -166,15 +168,29 @@ self.p_score, self.r_score, self.rounds, win)
     }
 }
 
-
-#[derive(Debug, Hash)]
-pub struct GameState {
+#[derive(Debug, Hash, Serialize, Eq, PartialEq, Deserialize)]
+pub struct GameSum {
     state: Gameboard,
-    player: Player,
+    player: Vec<Player>,
 }
 
-impl GameState {
-    pub fn new(gamestate: Gameboard, player: Player) -> Self {
-        GameState { state: gamestate, player: player, }
+impl GameSum {
+    pub fn new(gamestate: Gameboard, player: Vec<Player>) -> Self {
+        GameSum { state: gamestate, player: player }
+    }
+
+    pub fn get_players(&self) -> &Vec<Player> {
+        &self.player
+    }
+
+    pub fn get_mut_players(&mut self) -> &mut Vec<Player> {
+        &mut self.player
+    }
+
+}
+
+impl fmt::Display for GameSum {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, " Game: {}\t Player: {:?}", self.state, self.player)
     }
 }
