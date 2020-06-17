@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+//use serde::{Serialize, Deserialize};
 
 // Game structures
 pub type PDaemon = State;
@@ -57,13 +57,15 @@ impl Player {
     pub fn get_stateid(&self) -> usize {
         self.stateid
     }
-
 }
 
 impl fmt::Display for Player {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Player: {}\nScore: {}\nRank: {}\nStateId: {:?}", 
-               self.name, self.score, self.rank, self.stateid)
+        write!(
+            f,
+            "Player: {}\nScore: {}\nRank: {}\nStateId: {:?}",
+            self.name, self.score, self.rank, self.stateid
+        )
     }
 }
 
@@ -110,7 +112,6 @@ impl Leaderboard {
     }
 }
 
-
 #[derive(Debug, Hash, Serialize, Eq, PartialEq, Deserialize, Clone)]
 pub struct Gameboard {
     victor: Option<String>,
@@ -120,7 +121,6 @@ pub struct Gameboard {
 }
 
 impl Gameboard {
-
     pub fn update_victor(&mut self, name: Option<String>) {
         self.victor = name;
     }
@@ -161,10 +161,13 @@ impl fmt::Display for Gameboard {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let winner: Option<String> = self.victor.clone();
         let win = winner.unwrap();
-        write!(f, "=======================================================
+        write!(
+            f,
+            "=======================================================
 Player: {}\nRobo: {}\nTotal rounds: {}\nWinner: {:?}
-=======================================================", 
-self.p_score, self.r_score, self.rounds, win)
+=======================================================",
+            self.p_score, self.r_score, self.rounds, win
+        )
     }
 }
 
@@ -176,7 +179,10 @@ pub struct GameSum {
 
 impl GameSum {
     pub fn new(gamestate: Gameboard, player: Vec<Player>) -> Self {
-        GameSum { state: gamestate, player: player }
+        GameSum {
+            state: gamestate,
+            player: player,
+        }
     }
 
     pub fn get_players(&self) -> &Vec<Player> {
@@ -186,7 +192,6 @@ impl GameSum {
     pub fn get_mut_players(&mut self) -> &mut Vec<Player> {
         &mut self.player
     }
-
 }
 
 impl fmt::Display for GameSum {
